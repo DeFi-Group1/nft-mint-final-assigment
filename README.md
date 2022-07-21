@@ -7,8 +7,8 @@ First connect your wallet to the Goerli testnet from the "Connect Wallet" button
 In order to use marketplace nft's :)
 ```
 
-## In the server folder there is initial implementation of the contracts with needed functionality from the task assigment
-https://github.com/DeFi-Group1/nft-mint-final-assigment/tree/main/server/contracts
+## In this folder are the contracts with needed functionality from the task assigment
+https://github.com/DeFi-Group1/nft-mint-final-assigment/blob/main/contracts/NFTMarketplace.sol
 
 ## We have also frontend React app with initial view of the nft marketplace running
 ### Here are the demo screenshots of the nft marketplace in the frontend app folder
