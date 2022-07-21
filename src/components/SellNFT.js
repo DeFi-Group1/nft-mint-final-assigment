@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "../pinata";
 import Marketplace from '../Marketplace.json';
 import { useLocation } from "react-router";
@@ -12,6 +12,38 @@ export default function SellNFT() {
     const [message, updateMessage] = useState('');
     const location = useLocation();
     const [isDisabled, setDisabled] = useState(true);
+    const [listPrice, setPrice] = useState(0.01);
+  /*   async function getPrice() {
+        console.log('in getPrice');
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider?.getSigner();
+        //Pull the deployed contract instance
+        let contract = new ethers.Contract(Marketplace.address, Marketplace.abi, signer);
+        let listPrice = await contract.getListPrice();
+        console.log('listPrice = ', listPrice);
+        return listPrice;
+    }
+    let price = getPrice(); */
+
+    const increaseListPrice = () => {
+        setPrice(prevPrice => {
+            const newPrice = Number(prevPrice + prevPrice / 100);
+            localStorage.setItem("listPrice", newPrice);
+            return newPrice
+        });
+    };
+
+    useEffect(() => {
+        const initialValue = localStorage.getItem("listPrice");
+        if (initialValue) setPrice(parseFloat(initialValue));
+    }, []);
+
+    /* function increaseListPrice() {
+        console.log(`last price: ${listPrice}`);
+        listPrice = listPrice + listPrice/100;
+        setPrice(listPrice + listPrice/100);
+        console.log(`new price: ${listPrice}`);
+    } */
 
     //This function uploads the NFT image to IPFS
     async function OnChangeFile(e) {
@@ -34,12 +66,12 @@ export default function SellNFT() {
                 responseType: 'blob'
             });
             console.log("file content", response);
-                if (response?.statusText === "OK") {
-                  
-                    console.log("this file here", response.data)
-                    return waitForIt(response.data);
+            if (response?.statusText === "OK") {
 
-                }
+                console.log("this file here", response.data)
+                return waitForIt(response.data);
+
+            }
         }
         catch (e) {
             console.log("Error during file upload", e);
@@ -104,6 +136,8 @@ export default function SellNFT() {
             let transaction = await contract.createToken(metadataURL, price, { value: listingPrice })
             await transaction.wait()
 
+            increaseListPrice();
+
             alert("Successfully listed your NFT!");
             updateMessage("");
             updateFormParams({ name: '', description: '', price: '' });
@@ -129,8 +163,8 @@ export default function SellNFT() {
                         <textarea defaultValue="example description" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" cols="40" rows="5" id="description" type="text" placeholder="Axie Infinity Collection" value={formParams.description} onChange={e => updateFormParams({ ...formParams, description: e.target.value })}></textarea>
                     </div>
                     <div className="mb-6">
-                        <label className="block text-purple-500 text-sm font-bold mb-2" htmlFor="price">Price (in ETH)</label>
-                        <input defaultValue={0.01} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Min 0.01 ETH" value={formParams.price} onChange={e => updateFormParams({ ...formParams, price: e.target.value })}></input>
+                        <label className="block text-purple-500 text-sm font-bold mb-2" htmlFor="price">Price (min {listPrice} ETH)</label>
+                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="ETH" value={formParams.price} onChange={e => updateFormParams({ ...formParams, price: e.target.value })}></input>
                     </div>
                     <div>
                         <label className="block text-purple-500 text-sm font-bold mb-2" htmlFor="image">Upload Image</label>

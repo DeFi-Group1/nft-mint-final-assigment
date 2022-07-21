@@ -48,6 +48,10 @@ contract NFTMarketplace is ERC721URIStorage {
         listPrice = _listPrice;
     }
 
+    function increaseMintPrice() public payable {
+        listPrice = listPrice + listPrice/100;
+    }
+
     function getListPrice() public view returns (uint256) {
         return listPrice;
     }
@@ -79,13 +83,17 @@ contract NFTMarketplace is ERC721URIStorage {
 
         //Helper function to update Global variables and emit an event
         createListedToken(newTokenId, price);
+        increaseMintPrice();
 
         return newTokenId;
     }
 
     function createListedToken(uint256 tokenId, uint256 price) private {
         //Make sure the sender sent enough ETH to pay for listing
-        require(msg.value == listPrice, "Hopefully sending the correct price");
+        //string memory errorr = string.concat("Hopefully sending the correct price", string(listPrice));
+        console.log("listPrice", listPrice);
+        console.log("price", msg.value);
+        require(price >= listPrice, "Hopefully sending the correct price");
         //Just sanity check
         require(price > 0, "Make sure the price isn't negative");
 
