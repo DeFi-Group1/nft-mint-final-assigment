@@ -1,4 +1,4 @@
-# DeFi project Nft Marketplace
+# DeFi project NFT Marketplace
 
 # It is deployed in Heroku stage
 https://defi-quanterall-group.herokuapp.com/
@@ -9,6 +9,10 @@ In order to use marketplace nft's :)
 
 ## In this folder is the contract with needed functionality from the task assigment
 https://github.com/DeFi-Group1/nft-mint-final-assigment/blob/main/contracts/NFTMarketplace.sol
+```
+Deploying marketplace with this command:
+npx hardhat run --network goerli scripts/deploy.js
+```
 
 ## We have also frontend React app with initial view of the nft marketplace running
 ### Here are the demo screenshots of the nft marketplace in the frontend app folder
